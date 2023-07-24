@@ -4,14 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.ValidationException;
 
 import ru.yandex.practicum.filmorate.service.Manager;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -32,6 +28,4 @@ public class FilmController {
     public List<Film> getAllUsers() {
         return manager.getAllFilms();
     }
-
-
 }

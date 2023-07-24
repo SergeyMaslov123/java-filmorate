@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.ValidationException;
 import ru.yandex.practicum.filmorate.service.Manager;
 
-
 import java.util.List;
 
 @RestController
@@ -29,6 +28,4 @@ public class UserController {
     public List<User> getAllUsers() {
         return manager.getAllUsers();
     }
-
-
 }
