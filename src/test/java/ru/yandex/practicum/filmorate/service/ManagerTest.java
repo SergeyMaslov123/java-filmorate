@@ -26,13 +26,13 @@ public class ManagerTest {
                 .name("testName")
                 .description("testDescription")
                 .releaseDate(LocalDate.of(2002, 2, 2))
-                .duration(Duration.ofSeconds(100))
+                .duration(100)
                 .build();
         filmTest2 = Film.builder()
                 .name("testName2")
                 .description("testDescription2")
                 .releaseDate(LocalDate.of(2006, 3, 2))
-                .duration(Duration.ofSeconds(250))
+                .duration(250)
                 .build();
         userTest1 = User.builder()
                 .email("12@13")
