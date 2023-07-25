@@ -91,7 +91,7 @@ public class Manager {
     private boolean validFilm(Film film) {
         if (film.getName().isEmpty() || film.getDescription().length() > 200
                 || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
-                || film.getDuration().getSeconds() <= 0) {
+                || film.getDuration() <= 0) {
             log.warn("valid Film error " + film.toString());
             return false;
         }
