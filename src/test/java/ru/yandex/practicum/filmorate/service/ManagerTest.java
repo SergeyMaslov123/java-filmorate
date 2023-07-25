@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.ValidationException;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,13 +26,13 @@ public class ManagerTest {
                 .name("testName")
                 .description("testDescription")
                 .releaseDate(LocalDate.of(2002, 2, 2))
-                .duration(120)
+                .duration(Duration.ofSeconds(100))
                 .build();
         filmTest2 = Film.builder()
                 .name("testName2")
                 .description("testDescription2")
                 .releaseDate(LocalDate.of(2006, 3, 2))
-                .duration(150)
+                .duration(Duration.ofSeconds(250))
                 .build();
         userTest1 = User.builder()
                 .email("12@13")
