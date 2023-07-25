@@ -14,16 +14,19 @@ import java.util.List;
 public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     Manager manager = new Manager();
+
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) throws ValidationException {
         log.info("Создается film " + film.toString());
         return manager.createFilm(film);
     }
-    @PutMapping(value ="/films")
+
+    @PutMapping(value = "/films")
     public Film update(@RequestBody Film film) throws ValidationException {
         log.info("Film обновляется " + film.toString());
         return manager.updateFilm(film);
     }
+
     @GetMapping("/films")
     public List<Film> getAllUsers() {
         return manager.getAllFilms();

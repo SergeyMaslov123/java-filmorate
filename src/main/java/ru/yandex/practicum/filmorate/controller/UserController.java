@@ -19,11 +19,13 @@ public class UserController {
         log.info("User create");
         return manager.createUser(user);
     }
-    @PutMapping(value ="/users")
+
+    @PutMapping(value = "/users")
     public User update(@RequestBody User user) throws ValidationException {
         log.info("User update");
         return manager.updateUser(user);
     }
+
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return manager.getAllUsers();
