@@ -60,7 +60,7 @@ public class ManagerTest {
     }
 
     @Test
-    void ValidFilmDescriptionLength() throws ValidationException {
+    void validFilmDescriptionLength() throws ValidationException {
         char[] test = new char[201];
         String testDescriptionLength201 = new String(test);
         filmTest1.setDescription(testDescriptionLength201);
