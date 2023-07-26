@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.ValidationException;
@@ -53,7 +55,122 @@ public class ManagerTest {
         manager.createUser(userTest2);
         manager.createFilm(filmTest1);
         manager.createFilm(filmTest2);
-        assertEquals(manager.getAllFilms().size(), 2, "Films не сохранены");
+        assertEquals(manager.getAllFilms().size(), 2, "Films not save");
         assertEquals(manager.getAllUsers().size(), 2, "User not save");
+    }
+
+    @Test
+    void ValidFilmDescriptionLength() throws ValidationException {
+        char[] test = new char[201];
+        String testDescriptionLength201 = new String(test);
+        filmTest1.setDescription(testDescriptionLength201);
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createFilm(filmTest1);
+            }
+        });
+        char[] test200 = new char[200];
+        String testDescription200 = new String(test200);
+        filmTest2.setDescription(testDescription200);
+        manager.createFilm(filmTest2);
+        assertEquals(manager.getAllFilms().size(), 1, "validation film description error");
+    }
+
+    @Test
+    void validFilmName() {
+        filmTest1.setName("  ");
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createFilm(filmTest1);
+            }
+        });
+    }
+
+    @Test
+    void validFilmReleaseDate() throws ValidationException {
+        filmTest1.setReleaseDate(LocalDate.of(1895, 12, 27));
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createFilm(filmTest1);
+            }
+        });
+        filmTest2.setReleaseDate(LocalDate.of(1895, 12, 28));
+        manager.createFilm(filmTest2);
+        assertEquals(manager.getAllFilms().size(), 1, "validation of releaseDate error");
+    }
+
+    @Test
+    void validFilmDuration() {
+        filmTest1.setDuration(0);
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createFilm(filmTest1);
+            }
+        });
+        filmTest2.setDuration(-1);
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createFilm(filmTest2);
+            }
+        });
+    }
+
+    @Test
+    void validUserEmail() {
+        userTest1.setEmail(" ");
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createUser(userTest1);
+            }
+        });
+        userTest2.setEmail("123");
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createUser(userTest2);
+            }
+        });
+    }
+
+    @Test
+    void validUserLogin() {
+        userTest1.setLogin(" ");
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createUser(userTest1);
+            }
+        });
+        userTest2.setLogin("we we");
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createUser(userTest2);
+            }
+        });
+    }
+
+    @Test
+    void validUserBirthday() {
+        userTest1.setBirthday(LocalDate.of(2027, 12, 23));
+        Assertions.assertThrows(ValidationException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                manager.createUser(userTest1);
+            }
+        });
+    }
+
+    @Test
+    void validUserName() throws ValidationException {
+        userTest1.setName(" ");
+        manager.createUser(userTest1);
+        assertEquals(userTest1.getName(), userTest1.getLogin(), "validation name error");
     }
 }

@@ -13,13 +13,13 @@ import java.util.List;
 
 public class Manager {
     private static final Logger log = LoggerFactory.getLogger(Manager.class);
-    protected static HashMap<Integer, Film> allFilms = new HashMap<>();
-    HashMap<Integer, User> allUsers = new HashMap<>();
+    protected  HashMap<Integer, Film> allFilms = new HashMap<>();
+    protected HashMap<Integer, User> allUsers = new HashMap<>();
     protected int idFilms = 0;
     protected int idUsers = 0;
 
     public Film createFilm(Film film) throws ValidationException {
-        if (validFilm(film)) {
+        if (isValidFilm(film)) {
             film.setId(generateIdFilm());
             allFilms.put(film.getId(), film);
             return film;
@@ -30,7 +30,7 @@ public class Manager {
 
     public Film updateFilm(Film film) throws ValidationException {
         if (allFilms.containsKey(film.getId())) {
-            if (validFilm(film)) {
+            if (isValidFilm(film)) {
                 allFilms.put(film.getId(), film);
                 return film;
             } else {
@@ -46,9 +46,9 @@ public class Manager {
     }
 
     public User createUser(User user) throws ValidationException {
-        if (validUser(user)) {
+        if (isValidUser(user)) {
             user.setId(generateIdUser());
-            validUserName(user);
+            isValidUserName(user);
             allUsers.put(user.getId(), user);
             return user;
         } else {
@@ -58,8 +58,8 @@ public class Manager {
 
     public User updateUser(User user) throws ValidationException {
         if (allUsers.containsKey(user.getId())) {
-            if (validUser(user)) {
-                validUserName(user);
+            if (isValidUser(user)) {
+                isValidUserName(user);
                 allUsers.put(user.getId(), user);
                 return user;
             } else {
@@ -88,8 +88,8 @@ public class Manager {
         return idFilms + 1;
     }
 
-    private boolean validFilm(Film film) {
-        if (film.getName().isEmpty() || film.getDescription().length() > 200
+    private boolean isValidFilm(Film film) {
+        if (film.getName().isBlank() || film.getDescription().length() > 200
                 || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
                 || film.getDuration() <= 0) {
             log.warn("valid Film error " + film.toString());
@@ -98,16 +98,16 @@ public class Manager {
         return true;
     }
 
-    public boolean validUser(User user) {
+    private boolean isValidUser(User user) {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getLogin().isBlank()
-                || user.getBirthday().isAfter(LocalDate.now())) {
+                || user.getBirthday().isAfter(LocalDate.now()) || user.getLogin().contains(" ")) {
             log.warn("valid User error " + user.toString());
             return false;
         }
         return true;
     }
 
-    public User validUserName(User user) {
+    private User isValidUserName(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
