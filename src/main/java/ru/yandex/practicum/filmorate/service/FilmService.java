@@ -18,7 +18,6 @@ public class FilmService {
 
     @Autowired
     public FilmService(FilmStorage filmStorage) {
-
         this.filmStorage = filmStorage;
     }
 
@@ -59,8 +58,7 @@ public class FilmService {
         }
         if (count == null) {
             return filmStorage.getAllFilms().stream()
-                    .sorted((f1, f2) ->
-                    {
+                    .sorted((f1, f2) -> {
                         if (f1.getLike() == null || f2.getLike() == null) {
                             return -1;
                         } else {
@@ -71,8 +69,7 @@ public class FilmService {
                     .collect(Collectors.toList());
         } else {
             return filmStorage.getAllFilms().stream()
-                    .sorted((f1, f2) ->
-                    {
+                    .sorted((f1, f2) -> {
                         if (f1.getLike() == null || f2.getLike() == null) {
                             return -1;
                         } else {
@@ -83,6 +80,4 @@ public class FilmService {
                     .collect(Collectors.toList());
         }
     }
-
-
 }

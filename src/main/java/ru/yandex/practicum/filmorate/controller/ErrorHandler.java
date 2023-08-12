@@ -36,6 +36,4 @@ public class ErrorHandler {
     public ErrorResponse handleServerError(final Error e) {
         return new ErrorResponse(e.getMessage());
     }
-
-
 }
