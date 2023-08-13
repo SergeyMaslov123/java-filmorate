@@ -8,19 +8,19 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.List;
 
 @RestController
 public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private final InMemoryFilmStorage inMemoryFilmStorage;
+    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(InMemoryFilmStorage inMemoryFilmStorage, FilmService filmService) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    public FilmController(FilmStorage filmStorage, FilmService filmService) {
+        this.filmStorage = filmStorage;
         this.filmService = filmService;
     }
 
@@ -28,18 +28,18 @@ public class FilmController {
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) throws ValidationException {
         log.info("Создается film " + film.toString());
-        return inMemoryFilmStorage.createFilm(film);
+        return filmStorage.createFilm(film);
     }
 
     @PutMapping(value = "/films")
     public Film update(@RequestBody Film film) throws ValidationException {
         log.info("Film обновляется " + film.toString());
-        return inMemoryFilmStorage.updateFilm(film);
+        return filmStorage.updateFilm(film);
     }
 
     @GetMapping("/films")
     public List<Film> getAllUsers() {
-        return inMemoryFilmStorage.getAllFilms();
+        return filmStorage.getAllFilms();
     }
 
     @PutMapping("/films/{id}/like/{userId}")
@@ -60,7 +60,7 @@ public class FilmController {
 
     @GetMapping("/films/{id}")
     public Film getFilmForId(@PathVariable String id) throws ValidationException {
-        return inMemoryFilmStorage.getFilmForId(Integer.parseInt(id.trim()));
+        return filmStorage.getFilmForId(Integer.parseInt(id.trim()));
     }
 
 

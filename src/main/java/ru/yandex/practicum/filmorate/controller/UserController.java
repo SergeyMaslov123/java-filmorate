@@ -7,37 +7,37 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
 
 @RestController
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final InMemoryUserStorage inMemoryUserStorage;
+    private final UserStorage userStorage;
     private final UserService userService;
 
     @Autowired
-    public UserController(InMemoryUserStorage inMemoryUserStorage, UserService userService) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
+    public UserController(UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
         this.userService = userService;
     }
 
     @PostMapping(value = "/users")
     public User create(@RequestBody User user) throws ValidationException {
         log.info("User create");
-        return inMemoryUserStorage.createUser(user);
+        return userStorage.createUser(user);
     }
 
     @PutMapping(value = "/users")
     public User update(@RequestBody User user) throws ValidationException {
         log.info("User update");
-        return inMemoryUserStorage.updateUser(user);
+        return userStorage.updateUser(user);
     }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return inMemoryUserStorage.getAllUsers();
+        return userStorage.getAllUsers();
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
@@ -52,7 +52,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public User getUserForId(@PathVariable String id) throws ValidationException {
-        return inMemoryUserStorage.getUserForId(Integer.parseInt(id.trim()));
+        return userStorage.getUserForId(Integer.parseInt(id.trim()));
     }
 
     @GetMapping("/users/{id}/friends")
