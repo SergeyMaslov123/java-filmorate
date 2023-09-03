@@ -39,6 +39,7 @@ public class InMemoryUserStorageTest {
                 .name("testName2 ")
                 .birthday(LocalDate.of(1987, 10, 25))
                 .build();
+
     }
 
     @Test

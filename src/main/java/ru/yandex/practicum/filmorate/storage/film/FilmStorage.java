@@ -13,4 +13,10 @@ public interface FilmStorage {
     List<Film> getAllFilms();
 
     Film getFilmForId(int id) throws ValidationException;
+
+    List<Integer> getLike(int id);
+
+    void addLike(int idUser, int idFilm);
+
+    void deleteLike(int idFilm, int idUser) throws ValidationException;
 }

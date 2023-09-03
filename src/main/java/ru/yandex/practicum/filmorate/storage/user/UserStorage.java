@@ -14,7 +14,12 @@ public interface UserStorage {
 
     User getUserForId(int id) throws ValidationException;
 
-    boolean isValidUser(int id);
+    boolean isValidUser(int id) throws ValidationException;
 
+    void addFriend(int idUser, int idFriend);
+
+    void deleteFriend(int idUser, int idFriend);
+
+    List<User> getAllFriends(int idUser) throws ValidationException;
 }
 
