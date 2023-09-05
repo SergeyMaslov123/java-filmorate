@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import org.slf4j.Logger;
@@ -80,32 +81,43 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        List<Film> allFilms = new ArrayList<>();
-        List<Film> films = jdbcTemplate.query("SELECT * FROM films AS f LEFT JOIN MPA AS m ON f.ID_MPA = m.ID_MPA",
-                new FilmMapper());
-        for (Film film : films) {
-            genresDao.setGenres(film.getId(), film.getGenres());
-            film.setGenres(genresDao.getGenres(film.getId()));
-            film.setRate(getLike(film.getId()).size());
-            allFilms.add(film);
-        }
-        return allFilms;
+        String sqlQuery = "SELECT f.ID_FILM, f.NAME, f.DESCRIPTION, f.RELEASE_DATE ,f.DURATION ,m.NAME_MPA, m.ID_MPA, " +
+                "COUNT(l.ID_USER) AS rate FROM films AS f JOIN MPA AS m ON f.ID_MPA = m.ID_MPA " +
+                "LEFT JOIN LIKES l ON f.ID_FILM  = l.ID_FILM GROUP BY f.ID_FILM";
+        return jdbcTemplate.query(sqlQuery, (rs, RowNum) ->
+                Film.builder()
+                        .id(rs.getInt("id_film"))
+                        .name(rs.getString("name"))
+                        .description((rs.getString("description")))
+                        .releaseDate(rs.getDate("release_date").toLocalDate())
+                        .duration(rs.getInt("duration"))
+                        .mpa(new Mpa(rs.getInt("id_mpa"), rs.getString("name_mpa")))
+                        .rate(rs.getInt("rate"))
+                        .genres(genresDao.getGenres(rs.getInt("id_film")))
+                        .build());
     }
 
     @Override
     public Film getFilmForId(int id) throws ValidationException {
-        String sqlQuery = "SELECT f.id_film, " +
-                "f.name, f.description, f.release_date, f.DURATION, m.id_mpa, m.name_mpa " +
-                "FROM films AS f LEFT JOIN MPA AS m ON f.ID_MPA = m.ID_MPA WHERE f.ID_FILM = ?";
-        Film film = jdbcTemplate.query(sqlQuery, new Object[]{id}, new FilmMapper())
-                .stream().findAny().orElse(null);
-        if (film != null) {
-            genresDao.setGenres(film.getId(), film.getGenres());
-            film.setGenres(genresDao.getGenres(film.getId()));
-            film.setRate(getLike(id).size());
-            return film;
+        String sqlQuery = "SELECT f.ID_FILM, f.NAME, f.DESCRIPTION, f.RELEASE_DATE ,f.DURATION ,m.ID_MPA ,m.NAME_MPA, " +
+                "COUNT(l.ID_USER) AS rate FROM films AS f JOIN MPA AS m ON f.ID_MPA = m.ID_MPA " +
+                "LEFT JOIN LIKES l ON f.ID_FILM  = l.ID_FILM WHERE f.ID_FILM =? GROUP BY f.ID_FILM";
+        Film film = jdbcTemplate.query(sqlQuery, new Object[]{id}, (rs, RowNum) ->
+                Film.builder()
+                        .id(rs.getInt("id_film"))
+                        .name(rs.getString("name"))
+                        .description((rs.getString("description")))
+                        .releaseDate(rs.getDate("release_date").toLocalDate())
+                        .duration(rs.getInt("duration"))
+                        .mpa(new Mpa(rs.getInt("id_mpa"), rs.getString("name_mpa")))
+                        .rate(rs.getInt("rate"))
+                        .genres(genresDao.getGenres(rs.getInt("id_film")))
+                        .build()
+        ).stream().findAny().orElse(null);
+        if (film == null) {
+            throw new FilmNotFoundException("Film not found");
         } else {
-            throw new FilmNotFoundException("validation is fail + film.toString()");
+            return film;
         }
     }
 

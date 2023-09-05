@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.dao.GenresDao;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +23,18 @@ public class GenresDaoImpl implements GenresDao {
     @Override
     public void setGenres(int idFilm, Set<Genre> genres) {
         if (genres != null) {
-            for (Genre g : genres) {
-                jdbcTemplate.update("INSERT INTO film_genres(id_genre, id_film) VALUES (?,?)", g.getId(), idFilm);
+            if (!genres.isEmpty()) {
+                jdbcTemplate.update(con -> {
+                    PreparedStatement stmt =
+                            con.prepareStatement("INSERT INTO film_genres(id_genre, id_film) VALUES (?,?)");
+                    for (Genre g : genres) {
+                        stmt.setInt(1, g.getId());
+                        stmt.setInt(2, idFilm);
+                        stmt.addBatch();
+                    }
+                    stmt.executeBatch();
+                    return stmt;
+                });
             }
         }
     }
@@ -38,12 +49,7 @@ public class GenresDaoImpl implements GenresDao {
     @Override
     public Set<Genre> updateGenres(int idFilm, Set<Genre> genres) {
         jdbcTemplate.update("DELETE FROM FILM_GENRES WHERE ID_FILM= ?", idFilm);
-        if (genres != null) {
-            for (Genre genre : genres) {
-                String sqlQuery = "INSERT INTO film_genres(ID_GENRE, ID_FILM) VALUES(?,?)";
-                jdbcTemplate.update(sqlQuery, genre.getId(), idFilm);
-            }
-        }
+        setGenres(idFilm, genres);
         return getGenres(idFilm);
     }
 
