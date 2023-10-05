@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-
 import lombok.*;
 
 import java.time.LocalDate;
@@ -15,8 +14,11 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private int duration;
+    private Mpa mpa;
     @Builder.Default
-    private Set<Integer> like = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
+    @Builder.Default
+    private int rate = 0;
     @Builder.Default
     private int id = 0;
 }

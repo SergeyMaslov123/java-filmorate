@@ -87,4 +87,17 @@ public class InMemoryUserStorage implements UserStorage {
     public boolean isValidUser(int id) {
         return allUsers.containsKey(id);
     }
+
+    @Override
+    public void addFriend(int idUser, int idFriend) {
+    }
+
+    @Override
+    public void deleteFriend(int idUser, int idFriend) {
+    }
+
+    @Override
+    public List<User> getAllFriends(int idUser) {
+        return null;
+    }
 }
